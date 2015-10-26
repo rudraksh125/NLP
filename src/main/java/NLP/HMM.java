@@ -28,7 +28,13 @@ public class HMM {
 	public static HashMap<String, Integer> observations = new HashMap<String, Integer>();
 	public static List<List<Double>> viterbiMatrix = new ArrayList<List<Double>>();
 
-	public static void readFile(String path) {
+
+	public static void calculateHMMParameters(String path) {
+		getTrainStatesAndObservations(path);
+		calculateMatrices(path);
+	}
+	
+	public static void getTrainStatesAndObservations(String path) {
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
@@ -63,7 +69,6 @@ public class HMM {
 				List<Double> list = new ArrayList<Double>(Collections.nCopies(observations.size(), 1.0));
 				emissonMatrix.add(list);
 			}
-			calculateStateMatrix(path);
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -79,7 +84,8 @@ public class HMM {
 		}
 	}
 
-	public static void calculateStateMatrix(String path) {
+
+	public static void calculateMatrices(String path) {
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
 			String line = null;
@@ -197,11 +203,10 @@ public class HMM {
 
 	}
 
-	public static void main(String args[]) {
-		readFile("/Users/kvivekanandan/Desktop/ASU/CSE_576_Natural_Language_Processing/HWs/entrain.txt");
+	public static void predictTestData(String path) {
 		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream("/Users/kvivekanandan/Desktop/ASU/CSE_576_Natural_Language_Processing/HWs/entest.txt")));
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
 			String line = null;
 			ArrayList<String> input = new ArrayList<String>();
 			ArrayList<String> input_tags = new ArrayList<String>();
@@ -256,6 +261,11 @@ public class HMM {
 			}
 		}
 
+	}
+
+	public static void main(String args[]) {
+		calculateHMMParameters("entrain.txt");
+		predictTestData("entest.txt");
 	}
 
 }
