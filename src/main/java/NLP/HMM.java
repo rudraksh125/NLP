@@ -6,12 +6,10 @@
 
 package NLP;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -115,14 +113,6 @@ public class HMM {
 				previous_state = current_state;
 			}
 
-			//
-			// for(int i=0;i<stateMatrix.size();i++){
-			// for(int j=0;j<stateMatrix.get(i).size();j++){
-			// double p = stateMatrix.get(i).get(j) ;
-			// stateMatrix.get(i).set(j,p+1);
-			// }
-			// }
-
 			HashMap<Integer, Double> marginalEmissonProb = new HashMap<Integer, Double>();
 			for (int i = 0; i < emissonMatrix.size(); i++) {
 				double sum = 0;
@@ -132,7 +122,6 @@ public class HMM {
 				marginalEmissonProb.put(i, sum);
 			}
 			for (int i = 0; i < emissonMatrix.size(); i++) {
-				double sum = 0;
 				for (int j = 0; j < emissonMatrix.get(i).size(); j++) {
 					double p = emissonMatrix.get(i).get(j) / marginalEmissonProb.get(i);
 					emissonMatrix.get(i).set(j, p);
@@ -148,7 +137,6 @@ public class HMM {
 				marginalProb.put(i, sum);
 			}
 			for (int i = 0; i < stateMatrix.size(); i++) {
-				double sum = 0;
 				for (int j = 0; j < stateMatrix.get(i).size(); j++) {
 					double p = stateMatrix.get(i).get(j) / marginalProb.get(i);
 					stateMatrix.get(i).set(j, p);
@@ -212,7 +200,6 @@ public class HMM {
 			List<String> output = new ArrayList<String>();
 			Double num_words_test_set = 0.0;
 			Double num_correctclassified_words = 0.0;
-			int n = 0;
 			boolean isEnd = false;
 			while ((line = reader.readLine()) != null) {
 				String[] l = line.split("/");

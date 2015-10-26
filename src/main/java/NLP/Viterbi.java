@@ -2,6 +2,7 @@
  * @author kvivekanandan
  * Oct 25, 2015
  * Viterbi.java
+ * https://en.wikipedia.org/wiki/Viterbi_algorithm
  */
 
 package NLP;
