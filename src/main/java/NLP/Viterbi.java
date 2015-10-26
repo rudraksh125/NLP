@@ -29,20 +29,13 @@ public class Viterbi {
 			backtrack.add(list);
 		}
 
-		// for(String s: input_observations){
-		// System.out.print(s+" ");
-		// }
-		// System.out.println();
 		for (int s = 0; s < states.size(); s++) {
 			double a = stateMatrix.get(0).get(s);
 			String word = input_observations.get(0);
-			// System.out.println(input_observations.get(0) + ": " +
-			// observations.get(input_observations.get(0)));
 			if (observations.get(word) == null) {
 				word = "UNK";
 			}
 			double b = emissionMatrix.get(s).get(observations.get(word));
-			// double log = Math.abs(Math.log10(a) + Math.log10(b));
 			double log = Math.log10(a) + Math.log10(b);
 			viterbiMatrix.get(s).set(0, log);
 			backtrack.get(s).set(0, "");
@@ -50,7 +43,6 @@ public class Viterbi {
 
 		for (int i = 1; i < input_observations.size(); i++) {
 			String word = input_observations.get(i);
-			// System.out.println(word);
 			for (int j = 0; j < states.size(); j++) {
 				double max = Double.MAX_VALUE * -1;
 				String backtrackS = "";
@@ -61,8 +53,6 @@ public class Viterbi {
 					double a = emissionMatrix.get(j).get(observations.get(word));
 					double b = stateMatrix.get(k).get(j);
 					double mu = viterbiMatrix.get(k).get(i - 1);
-					// double log = Math.abs(Math.log10(a) + Math.log10(b) +
-					// mu);
 					double log = Math.log10(a) + Math.log10(b) + mu;
 					if (log > max) {
 						max = log;
@@ -73,10 +63,9 @@ public class Viterbi {
 				backtrack.get(j).set(i, backtrackS);
 			}
 		}
-		// HMM.printMatrix(viterbiMatrix, states);
-		// HMM.printMatrix(backtrack, states);
 
 		viterbiMatrix.get(states.size()).set(input_observations.size(), Double.MAX_VALUE);
+		
 		for (int s = 0; s < states.size(); s++) {
 			String state = HMM.getKeyByValue(states, s);
 			double a = stateMatrix.get(s).get(0);
@@ -92,9 +81,8 @@ public class Viterbi {
 		int sIndex = input_observations.size();
 		String tag = backtrack.get(hiddenStateIndex).get(sIndex);
 		while (tag != null && tag.length() != 0) {
-			String token = input_observations.get(sIndex - 1);
-			output.add(token + "/" + tag);
-			// System.out.println(token + "/" + tag);
+			String word = input_observations.get(sIndex - 1);
+			output.add(word + "/" + tag);
 			for (int i = 0; i < states.size(); i++) {
 				if (HMM.getKeyByValue(states, i).equals(tag)) {
 					hiddenStateIndex = i;

@@ -6,10 +6,12 @@
 
 package NLP;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,12 +30,11 @@ public class HMM {
 	public static HashMap<String, Integer> observations = new HashMap<String, Integer>();
 	public static List<List<Double>> viterbiMatrix = new ArrayList<List<Double>>();
 
-
 	public static void calculateHMMParameters(String path) {
 		getTrainStatesAndObservations(path);
 		calculateMatrices(path);
 	}
-	
+
 	public static void getTrainStatesAndObservations(String path) {
 		BufferedReader reader = null;
 		try {
@@ -83,7 +84,6 @@ public class HMM {
 				}
 		}
 	}
-
 
 	public static void calculateMatrices(String path) {
 		try {
@@ -158,7 +158,6 @@ public class HMM {
 			for (int i = 0; i < stateMatrix.get(0).size(); i++) {
 				initStateProb.put(getKeyByValue(states, i), stateMatrix.get(0).get(i));
 			}
-			// printMap(initStateProb);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -195,7 +194,7 @@ public class HMM {
 		}
 		return null;
 	}
-
+	
 	public static <K, V> void printMap(HashMap<K, V> map) {
 		for (Entry e : map.entrySet()) {
 			System.out.println(e.getKey() + " " + e.getValue());
@@ -213,19 +212,14 @@ public class HMM {
 			List<String> output = new ArrayList<String>();
 			Double num_words_test_set = 0.0;
 			Double num_correctclassified_words = 0.0;
+			int n = 0;
 			boolean isEnd = false;
 			while ((line = reader.readLine()) != null) {
 				String[] l = line.split("/");
-
 				if (l != null && l.length == 2) {
-
 					if (line.contains("###")) {
 						if (isEnd) {
 							output = predict(input);
-							if (input.size() != output.size()) {
-								System.out.println("INPUT SIZE NOT EQUAL TO OUTPUT SIZE");
-								System.exit(0);
-							}
 							for (int i = 0; i < input.size(); i++) {
 								if (input_tags.get(i).equals(output.get(i))) {
 									num_correctclassified_words += 1.0;
@@ -245,8 +239,12 @@ public class HMM {
 				}
 			}
 
-			double error_rate = num_correctclassified_words / num_words_test_set;
-			System.out.println("ERROR RATE : " + error_rate);
+			double accuracy = num_correctclassified_words / num_words_test_set;
+			System.out.println("ACCURACY : " + (accuracy * 100));
+
+			double error_rate = 1.0 - accuracy;
+			System.out.println("ERROR RATE: " + (error_rate * 100));
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -267,5 +265,4 @@ public class HMM {
 		calculateHMMParameters("entrain.txt");
 		predictTestData("entest.txt");
 	}
-
 }
